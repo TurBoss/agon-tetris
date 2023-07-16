@@ -1,5 +1,5 @@
-// #include <stdio.h>
-// #include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
@@ -7,7 +7,8 @@
 
 #include <graphics.h>
 
-#define BOX_SIZE 12
+#define OUTER_BOX_SIZE 12
+#define INNER_BOX_SIZE 8
 
 #define OFFSET_X 15
 #define OFFSET_Y 6
@@ -231,12 +232,12 @@ bool check(int _minoX, int _minoY, int minoType, int _minoAngle) {
 
 			if (minoShapes[minoType][_nextA][h][w]
 					&& field[_nextX][_nextY] == 1) {
-				// printf("cannot move\n");
 				return false;
 			}
 		}
 	}
 	return true;
+
 }
 
 
@@ -270,9 +271,6 @@ void draw_screen() {
 	writeMino(displayBuffer, minoX, minoY, minoType, minoAngle);
 	// clg();
 
-
-
-
 	for (int y = 0; y < FIELD_HEIGHT; ++y) {
 		for (int x = 0; x < FIELD_WIDTH; x++) {
 			//printf("%s", displayBuffer[x][y] ? "回" : "・");
@@ -280,10 +278,12 @@ void draw_screen() {
 			if (prevDisplayBuffer[x][y] != displayBuffer[x][y]) {
 
 				if (displayBuffer[x][y] == true) {
-					drawb((x+OFFSET_X) * BOX_SIZE,(y+OFFSET_Y) * BOX_SIZE, BOX_SIZE, BOX_SIZE);
+					drawb((x+OFFSET_X) * OUTER_BOX_SIZE,(y+OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE, OUTER_BOX_SIZE);
+					drawb(((x+OFFSET_X) * OUTER_BOX_SIZE) + 2,((y+OFFSET_Y) * OUTER_BOX_SIZE) + 2, INNER_BOX_SIZE, INNER_BOX_SIZE);
 				}
 				else{
-					undrawb((x+OFFSET_X) * BOX_SIZE,(y+OFFSET_Y) * BOX_SIZE, BOX_SIZE, BOX_SIZE);
+					undrawb((x+OFFSET_X) * OUTER_BOX_SIZE,(y+OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE, OUTER_BOX_SIZE);
+					undrawb(((x+OFFSET_X) * OUTER_BOX_SIZE) + 2, ((y+OFFSET_Y) * OUTER_BOX_SIZE)+2, INNER_BOX_SIZE, INNER_BOX_SIZE);
 				}
 
 				prevDisplayBuffer[x][y] = displayBuffer[x][y];
@@ -304,15 +304,19 @@ int main(void) {
 
 	// system("chcp 65001");
 
+	char in_key;
+
+	bool runing = True;
+
 	time_t t = time(NULL); //tに現在時刻を入力
 
-	char in_key = '';
 
 	initField();
 
 	resetMino();
 
-	while (1) {
+
+	while (runing) {
 
 		int dx = 0; //横移動
 		int dy = 0; //縦移動
@@ -328,6 +332,7 @@ int main(void) {
 						dx += -1;
 						moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 					}
+					break;
 				}
 				case 'd': {
 					if (check(minoX + 1, minoY, minoType, minoAngle)) {
@@ -352,12 +357,17 @@ int main(void) {
 					break;
 				}
 				case 27: {
+					clg();
+					runing = False;
+					break;
+				}
+				case 99: {
 					initField();
 					resetMino();
 					break;
 				}
 				default: {
-					cprintf("%d", in_key);
+					//cprintf("%d", in_key);
 					break;
 				}
 			}
@@ -365,6 +375,7 @@ int main(void) {
 			draw_screen();
 
 			msleep(1000);
+
 		}
 
 		if (t != time(NULL)) {
