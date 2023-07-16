@@ -22,11 +22,9 @@
 #define DEFAULT_POS_X 5
 #define DEFAULT_POS_Y (-MINO_HEIGHT + 1)
 
-
 // #define bool _Bool
 // #define true 1
 // #define false 0
-
 
 enum {
 	MINO_ANGLE_0, MINO_ANGLE_90, MINO_ANGLE_180, MINO_ANGLE_270, MINO_ANGLE_MAX
@@ -60,7 +58,6 @@ void writeMino(int target[FIELD_WIDTH][FIELD_HEIGHT], int _nextX, int _nextY,
 void draw_screen();
 bool isGameOver(int flag);
 
-
 int getRandom(int min, int max) {
 
 	static int flag;
@@ -73,7 +70,6 @@ int getRandom(int min, int max) {
 	return min + (int) (rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
 }
 
-
 void resetMino() {
 	minoX = 5;
 	minoY = 0;
@@ -82,7 +78,6 @@ void resetMino() {
 	//minoAngle = rand() % MINO_ANGLE_MAX;
 	minoAngle = getRandom(0, MINO_ANGLE_MAX - 1);
 }
-
 
 int field[FIELD_WIDTH][FIELD_HEIGHT];
 int displayBuffer[FIELD_WIDTH][FIELD_HEIGHT] = { };
@@ -189,7 +184,6 @@ char minoShapes[MINO_TYPE_MAX][MINO_ANGLE_MAX][MINO_HEIGHT][MINO_WIDTH] =
 						{ { 0, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 1, 0, 0 }, { 0,
 								0, 0, 0 } } } };
 
-
 //fieldの初期化
 void initField() {
 	memset(field, 0, sizeof(field));
@@ -202,7 +196,6 @@ void initField() {
 	}
 }
 
-
 //fieldをdisplayBufferにコピー
 void copyField() {
 	memset(displayBuffer, 0, sizeof(displayBuffer));
@@ -213,7 +206,6 @@ void copyField() {
 		}
 	}
 }
-
 
 //ミノの移動チェック
 bool check(int _minoX, int _minoY, int minoType, int _minoAngle) {
@@ -240,14 +232,12 @@ bool check(int _minoX, int _minoY, int minoType, int _minoAngle) {
 
 }
 
-
 //ミノを移動
 void moveMino(int *minoX, int *minoY, int *minoAngle, int _dx, int _dy, int _da) {
 	*minoX += _dx;
 	*minoY += _dy;
 	*minoAngle = (*minoAngle + _da) % MINO_ANGLE_MAX;
 }
-
 
 //ミノを第一引数に書き出し
 void writeMino(int target[FIELD_WIDTH][FIELD_HEIGHT], int _nextX, int _nextY,
@@ -263,7 +253,6 @@ void writeMino(int target[FIELD_WIDTH][FIELD_HEIGHT], int _nextX, int _nextY,
 	}
 }
 
-
 //コンソールに描画
 void draw_screen() {
 	copyField();
@@ -278,12 +267,19 @@ void draw_screen() {
 			if (prevDisplayBuffer[x][y] != displayBuffer[x][y]) {
 
 				if (displayBuffer[x][y] == true) {
-					drawb((x+OFFSET_X) * OUTER_BOX_SIZE,(y+OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE, OUTER_BOX_SIZE);
-					drawb(((x+OFFSET_X) * OUTER_BOX_SIZE) + 2,((y+OFFSET_Y) * OUTER_BOX_SIZE) + 2, INNER_BOX_SIZE, INNER_BOX_SIZE);
-				}
-				else{
-					undrawb((x+OFFSET_X) * OUTER_BOX_SIZE,(y+OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE, OUTER_BOX_SIZE);
-					undrawb(((x+OFFSET_X) * OUTER_BOX_SIZE) + 2, ((y+OFFSET_Y) * OUTER_BOX_SIZE)+2, INNER_BOX_SIZE, INNER_BOX_SIZE);
+					drawb((x + OFFSET_X) * OUTER_BOX_SIZE,
+							(y + OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE,
+							OUTER_BOX_SIZE);
+					drawb(((x + OFFSET_X) * OUTER_BOX_SIZE) + 2,
+							((y + OFFSET_Y) * OUTER_BOX_SIZE) + 2,
+							INNER_BOX_SIZE, INNER_BOX_SIZE);
+				} else {
+					undrawb((x + OFFSET_X) * OUTER_BOX_SIZE,
+							(y + OFFSET_Y) * OUTER_BOX_SIZE, OUTER_BOX_SIZE,
+							OUTER_BOX_SIZE);
+					undrawb(((x + OFFSET_X) * OUTER_BOX_SIZE) + 2,
+							((y + OFFSET_Y) * OUTER_BOX_SIZE) + 2,
+							INNER_BOX_SIZE, INNER_BOX_SIZE);
 				}
 
 				prevDisplayBuffer[x][y] = displayBuffer[x][y];
@@ -293,12 +289,10 @@ void draw_screen() {
 	}
 }
 
-
 //GameOverか判定 trueはGameOver
 bool isGameOver(int flag) {
 	return flag ? true : false;
 }
-
 
 int main(void) {
 
@@ -310,11 +304,9 @@ int main(void) {
 
 	time_t t = time(NULL); //tに現在時刻を入力
 
-
 	initField();
 
 	resetMino();
-
 
 	while (runing) {
 
@@ -327,49 +319,49 @@ int main(void) {
 			in_key = getch();
 
 			switch (in_key) {
-				case 'a': {
-					if (check(minoX - 1, minoY, minoType, minoAngle)) {
-						dx += -1;
-						moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
-					}
-					break;
+			case 'a': {
+				if (check(minoX - 1, minoY, minoType, minoAngle)) {
+					dx += -1;
+					moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 				}
-				case 'd': {
-					if (check(minoX + 1, minoY, minoType, minoAngle)) {
-						dx += 1;
-						moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
-					}
-					break;
+				break;
+			}
+			case 'd': {
+				if (check(minoX + 1, minoY, minoType, minoAngle)) {
+					dx += 1;
+					moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 				}
-				case 'w': {
-					if (check(minoX, minoY, minoType, minoAngle + 1)) {
-						draw_screen();
-						da += 1;
-						moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
-					}
-					break;
+				break;
+			}
+			case 'w': {
+				if (check(minoX, minoY, minoType, minoAngle + 1)) {
+					draw_screen();
+					da += 1;
+					moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 				}
-				case 's': {
-					if (check(minoX, minoY + 1, minoType, minoAngle)) {
-						dy = 1;
-						moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
-					}
-					break;
+				break;
+			}
+			case 's': {
+				if (check(minoX, minoY + 1, minoType, minoAngle)) {
+					dy = 1;
+					moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 				}
-				case 27: {
-					clg();
-					runing = False;
-					break;
-				}
-				case 99: {
-					initField();
-					resetMino();
-					break;
-				}
-				default: {
-					//cprintf("%d", in_key);
-					break;
-				}
+				break;
+			}
+			case 27: {
+				clg();
+				runing = False;
+				break;
+			}
+			case 99: {
+				initField();
+				resetMino();
+				break;
+			}
+			default: {
+				//cprintf("%d", in_key);
+				break;
+			}
 			}
 
 			draw_screen();
@@ -388,8 +380,7 @@ int main(void) {
 
 				moveMino(&minoX, &minoY, &minoAngle, dx, dy, da);
 
-			}
-			else {
+			} else {
 
 				// printf("fix\n");
 
